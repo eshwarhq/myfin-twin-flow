@@ -8,35 +8,46 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors */
+    --background: 220 30% 98%; /* Soft off-white */
+    --foreground: 214 9% 25%; /* Dark neutral gray */
+    
+    /* Card and element backgrounds */
+    --card: 0 0% 100%; /* Pure white */
+    --card-foreground: 214 9% 25%;
+    
+    /* Text colors */
+    --muted: 215 8% 38%; /* Secondary text */
+    --muted-foreground: 215 8% 38%;
+    
+    /* Accent gradient components */
+    --accent-start: 217 89% 61%; /* Google Blue */
+    --accent-end: 189 94% 43%; /* Soft Cyan */
+    
+    /* Component colors */
+    --primary: 217 89% 61%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 214 9% 25%;
+    
+    /* States */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Borders and inputs */
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: var(--accent-start);
 
+    /* Popover and surface colors */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 214 9% 25%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    /* Radius and shadows */
+    --radius: 0.75rem; /* 12px */
+    --shadow-color: 220 13% 91%;
+    --shadow-strength: 5%;
 
     --sidebar-background: 0 0% 98%;
 
@@ -102,4 +113,70 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom gradients */
+@layer utilities {
+  .gradient-primary {
+    @apply bg-gradient-to-r from-[hsl(var(--accent-start))] to-[hsl(var(--accent-end))];
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--accent-start))] to-[hsl(var(--accent-end))];
+  }
+  
+  .border-gradient {
+    @apply border-2 border-transparent bg-origin-border bg-clip-padding;
+    background-image: linear-gradient(to right, hsl(var(--background)), hsl(var(--background))), 
+                      linear-gradient(to right, hsl(var(--accent-start)), hsl(var(--accent-end)));
+  }
+  
+  .shadow-card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .glass-effect {
+    @apply bg-white bg-opacity-80 backdrop-blur-md;
+  }
+}
+
+/* Animations */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulseGlow 2s infinite;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 0 8px hsl(var(--accent-start));
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .focus-gradient:focus {
+    @apply outline-none border-transparent;
+    box-shadow: 0 0 0 2px hsl(var(--accent-start)), 0 0 0 4px hsl(var(--accent-end) / 0.5);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 hsla(var(--accent-start), 0.7); }
+  70% { box-shadow: 0 0 0 10px hsla(var(--accent-start), 0); }
+  100% { box-shadow: 0 0 0 0 hsla(var(--accent-start), 0); }
 }
