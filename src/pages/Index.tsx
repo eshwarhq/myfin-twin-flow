@@ -8,48 +8,34 @@ import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import abstractBg from "@/assets/abstract-bg.jpg";
 import logo from "@/assets/logo.png";
-
 const Index = () => {
   const [demoQuestion, setDemoQuestion] = useState("");
   const [isRecording, setIsRecording] = useState(false);
-  
-  const suggestionChips = [
-    "What's my net worth looking like?",
-    "Show me spending patterns this month", 
-    "Am I on track for retirement?",
-    "Find unusual transactions",
-    "Optimize my budget allocation"
-  ];
-
+  const suggestionChips = ["What's my net worth looking like?", "Show me spending patterns this month", "Am I on track for retirement?", "Find unusual transactions", "Optimize my budget allocation"];
   const handleSendDemo = (message: string) => {
     toast({
       title: "Sign up to continue",
       description: "Create an account to start your financial journey with MyFinance Twin AI.",
-      action: (
-        <Link to="/signup">
+      action: <Link to="/signup">
           <Button variant="gradient" size="sm">Sign Up</Button>
         </Link>
-      ),
     });
   };
-
   const handleToggleVoice = () => {
     setIsRecording(!isRecording);
     if (!isRecording) {
       toast({
         title: "Voice input activated",
-        description: "Please sign up to use this feature.",
+        description: "Please sign up to use this feature."
       });
-      
+
       // Simulate voice recognition ending after 3 seconds
       setTimeout(() => {
         setIsRecording(false);
       }, 3000);
     }
   };
-
-  return (
-    <div className="flex min-h-screen flex-col surface-ambient">
+  return <div className="flex min-h-screen flex-col surface-ambient">
       <Navbar />
       
       <main className="flex-1">
@@ -64,11 +50,7 @@ const Index = () => {
           
           {/* Original abstract background (reduced opacity) */}
           <div className="absolute inset-0 z-0">
-            <img 
-              src={abstractBg} 
-              alt="" 
-              className="h-full w-full object-cover opacity-20" 
-            />
+            <img src={abstractBg} alt="" className="h-full w-full object-cover opacity-20" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80"></div>
           </div>
           
@@ -88,7 +70,7 @@ const Index = () => {
               <h1 className="animate-fade-in mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
                 AI today can answer general financial questions—
                 <br />
-                <span className="text-gradient">but not yours.</span>
+                
               </h1>
               
               <p className="animate-slide-up mb-10 text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -98,28 +80,16 @@ const Index = () => {
               
               {/* Primary Conversational Input Slab */}
               <div className="animate-fade-in mx-auto mb-6 flex justify-center">
-                <ChatInput 
-                  className="w-full max-w-2xl shadow-lg hover:shadow-glow rounded-2xl"
-                  onSend={handleSendDemo}
-                  isRecording={isRecording}
-                  onToggleVoice={handleToggleVoice}
-                />
+                <ChatInput className="w-full max-w-2xl shadow-lg hover:shadow-glow rounded-2xl" onSend={handleSendDemo} isRecording={isRecording} onToggleVoice={handleToggleVoice} />
               </div>
               
               {/* "Or see what's possible" suggestion chips */}
               <div className="animate-fade-in mb-10">
                 <p className="text-sm text-muted-foreground mb-4">Or see what's possible</p>
                 <div className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
-                  {suggestionChips.map((suggestion, index) => (
-                    <SmartChip 
-                      key={index} 
-                      variant="suggestion" 
-                      className="text-xs"
-                      onClick={() => handleSendDemo(suggestion)}
-                    >
+                  {suggestionChips.map((suggestion, index) => <SmartChip key={index} variant="suggestion" className="text-xs" onClick={() => handleSendDemo(suggestion)}>
                       {suggestion}
-                    </SmartChip>
-                  ))}
+                    </SmartChip>)}
                 </div>
               </div>
               
@@ -149,12 +119,12 @@ const Index = () => {
               <div className="rounded-xl border p-6 shadow-card transition-all duration-300 hover:shadow-lg">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                    <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/>
-                    <path d="M8.5 8.5v.01"/>
-                    <path d="M16 15.5v.01"/>
-                    <path d="M12 12v.01"/>
-                    <path d="M11 17v.01"/>
-                    <path d="M7 14v.01"/>
+                    <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5" />
+                    <path d="M8.5 8.5v.01" />
+                    <path d="M16 15.5v.01" />
+                    <path d="M12 12v.01" />
+                    <path d="M11 17v.01" />
+                    <path d="M7 14v.01" />
                   </svg>
                 </div>
                 <h3 className="mb-2 text-xl font-semibold">Personalized Insights</h3>
@@ -167,9 +137,9 @@ const Index = () => {
               <div className="rounded-xl border p-6 shadow-card transition-all duration-300 hover:shadow-lg">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                    <path d="M2 12a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V7H2Z"/>
-                    <path d="M6 11c0-5.573 2.886-10 5.5-10S17 5.427 17 11"/>
-                    <path d="M15 5h-3"/>
+                    <path d="M2 12a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V7H2Z" />
+                    <path d="M6 11c0-5.573 2.886-10 5.5-10S17 5.427 17 11" />
+                    <path d="M15 5h-3" />
                   </svg>
                 </div>
                 <h3 className="mb-2 text-xl font-semibold">Future Simulation</h3>
@@ -182,10 +152,10 @@ const Index = () => {
               <div className="rounded-xl border p-6 shadow-card transition-all duration-300 hover:shadow-lg">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                    <path d="m16 8-4-4-4 4"/>
-                    <path d="M12 4v9"/>
-                    <path d="M12 18v.01"/>
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                    <path d="m16 8-4-4-4 4" />
+                    <path d="M12 4v9" />
+                    <path d="M12 18v.01" />
                   </svg>
                 </div>
                 <h3 className="mb-2 text-xl font-semibold">Secure Integration</h3>
@@ -210,8 +180,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
