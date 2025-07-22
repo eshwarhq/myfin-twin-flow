@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChatInput } from "@/components/chat-input";
+import { SmartChip } from "@/components/smart-chip";
+import { ExplanationBlock } from "@/components/explanation-block";
+import { DataChip } from "@/components/data-chip";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import logo from "@/assets/logo.png";
@@ -12,8 +15,18 @@ interface Message {
   content: string;
   sender: "user" | "ai";
   timestamp: Date;
-  explanation?: string;
+  explanation?: {
+    sourceData?: string;
+    calculations?: string;
+    modelNotes?: string;
+  };
   showExplanation?: boolean;
+  dataSource?: {
+    type: "fi-mcp" | "ephemeral" | "cached";
+    timestamp?: Date;
+    source?: string;
+  };
+  suggestions?: string[];
 }
 
 const Chat = () => {
@@ -58,7 +71,17 @@ const Chat = () => {
           content: "Your current net worth is $47,300, which is up 12.6% from the beginning of the year. Your assets total $72,800 and your liabilities are $25,500.",
           sender: "ai",
           timestamp: new Date(),
-          explanation: "I calculated your net worth by summing the balances of all your connected accounts:\n\nChecking: $8,200\nSavings: $15,500\nInvestments: $49,100\nHome equity: $0\nTotal assets: $72,800\n\nMinus your liabilities:\nCredit cards: $3,500\nStudent loans: $22,000\nTotal liabilities: $25,500\n\nNet worth: $72,800 - $25,500 = $47,300",
+          explanation: {
+            sourceData: "Connected accounts from FI MCP:\n• Checking Account (Chase): $8,200\n• Savings Account (Chase): $15,500\n• Investment Account (Fidelity): $49,100\n• Credit Card (Chase): -$3,500\n• Student Loan (Sallie Mae): -$22,000",
+            calculations: "Assets = $8,200 + $15,500 + $49,100 = $72,800\nLiabilities = $3,500 + $22,000 = $25,500\nNet Worth = $72,800 - $25,500 = $47,300",
+            modelNotes: "Used standard net worth calculation. Growth rate compared to previous quarter data. All balances current as of last sync."
+          },
+          dataSource: {
+            type: "fi-mcp",
+            timestamp: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
+            source: "Chase Bank, Fidelity, Sallie Mae"
+          },
+          suggestions: ["Compare month-over-month spending", "Show investment performance", "Track goal progress"]
         };
       } else if (content.toLowerCase().includes("budget") || content.toLowerCase().includes("spending")) {
         aiResponse = {
@@ -66,7 +89,17 @@ const Chat = () => {
           content: "You've spent $2,450 this month, which is about 15% less than your monthly average. Your largest spending category is housing at $1,200, followed by groceries at $650.",
           sender: "ai",
           timestamp: new Date(),
-          explanation: "I analyzed your transaction data from the past 30 days across all linked accounts and categorized your spending as follows:\n\nHousing: $1,200 (49%)\nGroceries: $650 (26.5%)\nEntertainment: $250 (10.2%)\nTransportation: $180 (7.3%)\nOther: $170 (7%)\nTotal: $2,450",
+          explanation: {
+            sourceData: "Transaction data from the past 30 days:\n• 47 transactions analyzed\n• 5 categories identified\n• Data from Chase Checking & Credit accounts",
+            calculations: "Housing: $1,200 (49%)\nGroceries: $650 (26.5%)\nEntertainment: $250 (10.2%)\nTransportation: $180 (7.3%)\nOther: $170 (7%)\nTotal: $2,450",
+            modelNotes: "Categorization based on merchant data and transaction descriptions. Compared against 6-month average of $2,882/month."
+          },
+          dataSource: {
+            type: "fi-mcp",
+            timestamp: new Date(Date.now() - 2 * 60 * 1000), // 2 minutes ago
+            source: "Chase Bank transaction history"
+          },
+          suggestions: ["Break down grocery spending", "Find cost-saving opportunities", "Set spending alerts"]
         };
       } else if (content.toLowerCase().includes("save") || content.toLowerCase().includes("saving")) {
         aiResponse = {
@@ -171,20 +204,41 @@ const Chat = () => {
                   >
                     <p>{message.content}</p>
                     
-                    {message.explanation && (
-                      <button
-                        onClick={() => toggleExplanation(message.id)}
-                        className="mt-2 text-left text-xs text-primary hover:underline"
-                      >
-                        How did I calculate this?
-                      </button>
+                    {/* Data Provenance */}
+                    {message.dataSource && (
+                      <div className="mt-2">
+                        <DataChip
+                          type={message.dataSource.type}
+                          timestamp={message.dataSource.timestamp}
+                          source={message.dataSource.source}
+                        />
+                      </div>
                     )}
                     
-                    {message.showExplanation && message.explanation && (
-                      <div className="mt-2 rounded-md bg-secondary/50 p-2 text-xs">
-                        <div className="text-muted-foreground whitespace-pre-line">
-                          {message.explanation}
-                        </div>
+                    {/* Explanation Block */}
+                    {message.explanation && (
+                      <ExplanationBlock
+                        isExpanded={message.showExplanation || false}
+                        onToggle={() => toggleExplanation(message.id)}
+                        sourceData={message.explanation.sourceData}
+                        calculations={message.explanation.calculations}
+                        modelNotes={message.explanation.modelNotes}
+                        dataSource={message.dataSource}
+                      />
+                    )}
+                    
+                    {/* Smart Follow-up Suggestions */}
+                    {message.suggestions && message.suggestions.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-1">
+                        {message.suggestions.map((suggestion, index) => (
+                          <SmartChip
+                            key={index}
+                            variant="suggestion"
+                            onClick={() => handleSendMessage(suggestion)}
+                          >
+                            {suggestion}
+                          </SmartChip>
+                        ))}
                       </div>
                     )}
                   </div>

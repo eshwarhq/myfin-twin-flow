@@ -1,15 +1,25 @@
 import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { ChatInput } from "@/components/chat-input";
+import { SmartChip } from "@/components/smart-chip";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
+import { Sparkles } from "lucide-react";
 import abstractBg from "@/assets/abstract-bg.jpg";
 import logo from "@/assets/logo.png";
 
 const Index = () => {
   const [demoQuestion, setDemoQuestion] = useState("");
   const [isRecording, setIsRecording] = useState(false);
+  
+  const suggestionChips = [
+    "What's my net worth looking like?",
+    "Show me spending patterns this month", 
+    "Am I on track for retirement?",
+    "Find unusual transactions",
+    "Optimize my budget allocation"
+  ];
 
   const handleSendDemo = (message: string) => {
     toast({
@@ -39,24 +49,38 @@ const Index = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col surface-ambient">
       <Navbar />
       
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative overflow-hidden py-20 md:py-32">
-          {/* Abstract Background Image */}
+          {/* Ambient geometric background */}
+          <div className="absolute inset-0 z-0 animate-ambient-drift opacity-30">
+            <div className="absolute top-20 left-1/4 w-32 h-32 rounded-full bg-gradient-to-br from-accent-blue/8 to-transparent" />
+            <div className="absolute top-1/3 right-1/4 w-24 h-24 rounded-lg bg-gradient-to-br from-accent-cyan/6 to-transparent rotate-45" />
+            <div className="absolute bottom-1/3 left-1/3 w-20 h-20 rounded-full bg-gradient-to-br from-accent-bridge/5 to-transparent" />
+          </div>
+          
+          {/* Original abstract background (reduced opacity) */}
           <div className="absolute inset-0 z-0">
             <img 
               src={abstractBg} 
               alt="" 
-              className="h-full w-full object-cover opacity-50" 
+              className="h-full w-full object-cover opacity-20" 
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80"></div>
           </div>
           
           <div className="container relative z-10 mx-auto px-4">
-            <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto max-w-4xl text-center">
+              <div className="mb-6 flex justify-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card/80 backdrop-blur-sm">
+                  <Sparkles className="w-4 h-4 text-accent-blue" />
+                  <span className="text-sm font-medium text-muted-foreground">Powered by Gemini AI + FI MCP</span>
+                </div>
+              </div>
+              
               <div className="mb-8 flex justify-center">
                 <img src={logo} alt="MyFinance Twin AI Logo" className="h-20 w-20" />
               </div>
@@ -67,28 +91,46 @@ const Index = () => {
                 <span className="text-gradient">but not yours.</span>
               </h1>
               
-              <p className="animate-slide-up mb-10 text-xl text-muted-foreground">
+              <p className="animate-slide-up mb-10 text-xl text-muted-foreground max-w-3xl mx-auto">
                 MyFinance Twin AI is your intelligent financial co-pilot that simulates your future, 
                 spots anomalies, and guides you to better decisions.
               </p>
               
-              <div className="animate-fade-in mx-auto mb-8 flex justify-center">
+              {/* Primary Conversational Input Slab */}
+              <div className="animate-fade-in mx-auto mb-6 flex justify-center">
                 <ChatInput 
-                  className="w-full max-w-xl shadow-lg hover-glow"
+                  className="w-full max-w-2xl shadow-lg hover:shadow-glow rounded-2xl"
                   onSend={handleSendDemo}
                   isRecording={isRecording}
                   onToggleVoice={handleToggleVoice}
                 />
               </div>
               
+              {/* "Or see what's possible" suggestion chips */}
+              <div className="animate-fade-in mb-10">
+                <p className="text-sm text-muted-foreground mb-4">Or see what's possible</p>
+                <div className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
+                  {suggestionChips.map((suggestion, index) => (
+                    <SmartChip 
+                      key={index} 
+                      variant="suggestion" 
+                      className="text-xs"
+                      onClick={() => handleSendDemo(suggestion)}
+                    >
+                      {suggestion}
+                    </SmartChip>
+                  ))}
+                </div>
+              </div>
+              
               <div className="animate-fade-in flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                 <Link to="/signup">
-                  <Button variant="gradient" size="xl" className="w-full sm:w-auto">
+                  <Button variant="gradient" size="xl" className="w-full sm:w-auto shadow-lg hover:shadow-glow">
                     Create Free Account
                   </Button>
                 </Link>
                 <Link to="/features">
-                  <Button variant="outline" size="xl" className="w-full sm:w-auto">
+                  <Button variant="outline" size="xl" className="w-full sm:w-auto border-gradient">
                     See How It Works
                   </Button>
                 </Link>

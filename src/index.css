@@ -2,52 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Gemini-Style Design System - Light Theme Only
+All colors MUST be HSL. Semantic tokens for intelligence + trust + clarity.
 */
 
 @layer base {
   :root {
     /* Base colors */
-    --background: 220 30% 98%; /* Soft off-white */
-    --foreground: 214 9% 25%; /* Dark neutral gray */
+    --background: 248 249 250; /* #F8F9FA soft off-white */
+    --foreground: 214 9% 25%; /* #3C4043 primary text */
     
-    /* Card and element backgrounds */
-    --card: 0 0% 100%; /* Pure white */
+    /* Surface hierarchy */
+    --card: 0 0% 100%; /* #FFFFFF pure white */
     --card-foreground: 214 9% 25%;
+    --surface-glass: 0 0% 100% / 0.8; /* Frosted glass nav */
     
-    /* Text colors */
-    --muted: 215 8% 38%; /* Secondary text */
+    /* Text hierarchy */
+    --text-primary: 214 9% 25%; /* #3C4043 */
+    --text-secondary: 215 8% 38%; /* #5F6368 */
+    --text-muted: 215 8% 55%; /* Lighter secondary */
+    --muted: 215 8% 38%;
     --muted-foreground: 215 8% 38%;
     
-    /* Accent gradient components */
-    --accent-start: 217 89% 61%; /* Google Blue */
-    --accent-end: 189 94% 43%; /* Soft Cyan */
+    /* Gemini Multi-Stop Accent Gradient */
+    --accent-blue: 217 89% 61%; /* #1A73E8 Google Blue */
+    --accent-bridge: 204 89% 58%; /* #3BACF5 mid blue-cyan */
+    --accent-cyan: 189 94% 43%; /* #00BCD4 Cyan */
+    --accent-start: var(--accent-blue);
+    --accent-end: var(--accent-cyan);
     
-    /* Component colors */
-    --primary: 217 89% 61%;
+    /* Gradient tokens */
+    --grad-accent-bg: linear-gradient(90deg, hsl(var(--accent-blue)), hsl(var(--accent-bridge)) 40%, hsl(var(--accent-cyan)));
+    --grad-accent-stroke: linear-gradient(90deg, hsl(var(--accent-blue)), hsl(var(--accent-cyan)));
+    --grad-accent-glow: linear-gradient(90deg, hsl(var(--accent-blue) / 0.2), hsl(var(--accent-cyan) / 0.2));
+    
+    /* Component system */
+    --primary: var(--accent-blue);
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 220 14% 96%;
+    --secondary: 220 14% 96%; /* #EDEFF1 light gray bubbles */
     --secondary-foreground: 214 9% 25%;
     
-    /* States */
+    /* Trust & data provenance */
+    --trust-bg: 217 100% 97%; /* #E8F0FE pale blue */
+    --trust-text: var(--accent-blue);
+    --ephemeral-accent: 45 100% 51%; /* Amber for ephemeral badges */
+    
+    /* State colors */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
+    --warning: 45 100% 51%; /* Amber */
+    --warning-foreground: 0 0% 100%;
 
-    /* Borders and inputs */
-    --border: 220 13% 91%;
+    /* Interaction surfaces */
+    --border: 220 13% 91%; /* #E0E0E0 */
     --input: 220 13% 91%;
-    --ring: var(--accent-start);
+    --input-focus: var(--accent-blue);
+    --ring: var(--accent-blue);
 
-    /* Popover and surface colors */
+    /* Elevated surfaces */
     --popover: 0 0% 100%;
     --popover-foreground: 214 9% 25%;
 
-    /* Radius and shadows */
-    --radius: 0.75rem; /* 12px */
-    --shadow-color: 220 13% 91%;
-    --shadow-strength: 5%;
+    /* Spacing & geometry */
+    --radius-sm: 0.5rem; /* 8px small elements */
+    --radius: 0.75rem; /* 12px baseline */
+    --radius-lg: 1.25rem; /* 20px conversational orbs */
+    --radius-pill: 50rem; /* Pill shapes */
+    
+    /* Elevation system */
+    --shadow-sm: 0 1px 3px hsl(0 0% 0% / 0.04);
+    --shadow: 0 4px 6px hsl(0 0% 0% / 0.05);
+    --shadow-lg: 0 10px 15px hsl(0 0% 0% / 0.08);
+    --shadow-glow: 0 0 20px hsl(var(--accent-blue) / 0.15);
+    
+    /* Motion system */
+    --duration-fast: 100ms;
+    --duration-normal: 180ms;
+    --duration-slow: 250ms;
+    --duration-pulse: 800ms;
+    
+    --ease-enter: cubic-bezier(0.2, 0, 0, 1); /* Fast to slow */
+    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -115,28 +152,83 @@ All colors MUST be HSL.
   }
 }
 
-/* Custom gradients */
+/* Gemini-Style Utilities */
 @layer utilities {
+  /* Gradient system */
   .gradient-primary {
-    @apply bg-gradient-to-r from-[hsl(var(--accent-start))] to-[hsl(var(--accent-end))];
+    background: var(--grad-accent-bg);
+  }
+  
+  .gradient-glow {
+    background: var(--grad-accent-glow);
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--accent-start))] to-[hsl(var(--accent-end))];
+    @apply bg-clip-text text-transparent;
+    background: var(--grad-accent-bg);
   }
   
   .border-gradient {
-    @apply border-2 border-transparent bg-origin-border bg-clip-padding;
-    background-image: linear-gradient(to right, hsl(var(--background)), hsl(var(--background))), 
-                      linear-gradient(to right, hsl(var(--accent-start)), hsl(var(--accent-end)));
+    position: relative;
+    @apply border border-transparent;
+    background: linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
+                var(--grad-accent-stroke) border-box;
   }
   
+  /* Surface system */
+  .surface-glass {
+    @apply backdrop-blur-md;
+    background: hsl(var(--surface-glass));
+  }
+  
+  .surface-ambient {
+    background: 
+      radial-gradient(circle at 30% 20%, hsl(var(--accent-blue) / 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 70% 80%, hsl(var(--accent-cyan) / 0.03) 0%, transparent 50%),
+      hsl(var(--background));
+  }
+  
+  /* Trust & provenance */
+  .chip-trust {
+    @apply inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-lg;
+    background: hsl(var(--trust-bg));
+    color: hsl(var(--trust-text));
+  }
+  
+  .chip-ephemeral {
+    @apply inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-lg;
+    background: hsl(var(--ephemeral-accent) / 0.1);
+    color: hsl(var(--ephemeral-accent));
+  }
+  
+  /* Shadows & elevation */
   .shadow-card {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow);
   }
   
-  .glass-effect {
-    @apply bg-white bg-opacity-80 backdrop-blur-md;
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .shadow-ai-bubble {
+    box-shadow: var(--shadow-sm), 0 0 0 1px hsl(var(--accent-blue) / 0.1);
+  }
+  
+  /* Interactive states */
+  .hover-lift {
+    @apply transition-all duration-200;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+  }
+  
+  .focus-gradient {
+    @apply outline-none transition-all;
+    &:focus-visible {
+      box-shadow: 0 0 0 2px hsl(var(--accent-blue)), 
+                  0 0 0 4px hsl(var(--accent-cyan) / 0.3);
+    }
   }
 }
 
